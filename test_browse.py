@@ -13,7 +13,7 @@ class TestBrowseCategory(unittest.TestCase):
 
     def test_browse_category(self):
         browse_link = WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable((By.CSS_SELECTOR, "a[data-a-target='side-nav-link']"))
+            EC.element_to_be_clickable((By.CSS_SELECTOR, "a[data-a-target='browse-link']"))
         )
         browse_link.click()
 
@@ -22,11 +22,9 @@ class TestBrowseCategory(unittest.TestCase):
         )
 
         category_tags_input.send_keys("horror")
-
         category_tags_input.submit()
 
         time.sleep(5)
-
         assert "Horror" in self.driver.page_source
 
     def tearDown(self):
