@@ -18,13 +18,15 @@ class TestBrowseCategory(unittest.TestCase):
         browse_link.click()
 
         category_tags_input = WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable((By.CSS_SELECTOR, "input[data-a-target='category-tags-input']"))
+            EC.element_to_be_clickable((By.CSS_SELECTOR, "input[data-a-target='tw-input'][aria-label='Search Category Tags']"))
         )
 
         category_tags_input.send_keys("horror")
-        category_tags_input.submit()
 
-        time.sleep(5)
+        WebDriverWait(self.driver, 10).until(
+            EC.presence_of_element_located((By.CLASS_NAME, "ScManagerCategoryTileBase-sc-1uac1er-0"))
+        )
+
         assert "Horror" in self.driver.page_source
 
     def tearDown(self):
