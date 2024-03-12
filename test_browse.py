@@ -5,38 +5,43 @@ from selenium.webdriver.support import expected_conditions as EC
 import time
 import unittest
 
-class TestBrowseCategory(unittest.TestCase):
+
+class TestFollowChannel(unittest.TestCase):
     def setUp(self):
         self.driver = webdriver.Chrome()
-        self.driver.implicitly_wait(5)
+        self.driver.implicitly_wait(10)
         self.driver.get("https://www.twitch.tv")
 
-    def test_browse_category(self):
-        browse_link = WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable((By.CSS_SELECTOR, "a[data-a-target='browse-link']"))
-        )
-        browse_link.click()
+        self.login()
 
-        category_tags_input = WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable((By.CSS_SELECTOR, "input[data-a-target='tw-input'][aria-label='Search Category Tags']"))
-        )
+    def login(self):
+        login_button = self.driver.find_element(By.XPATH, "//button[contains(@data-a-target, 'login-button')]")
+        login_button.click()
 
-        category_tags_input.send_keys("horror")
+        username_field = self.driver.find_element(By.ID, "login-username")
+        password_field = self.driver.find_element(By.ID, "password-input")
+        username_field.send_keys("ulyvean")
+        password_field.send_keys("joonsonmin2024")
+        password_field.submit()
+        time.sleep(5)
 
-        dropdown_item = WebDriverWait(self.driver, 10).until(
-            EC.visibility_of_element_located((By.CSS_SELECTOR, ".tw-tag__suggestion"))
-        )
+    def test_follow_channel(self):
+        channel_url = "https://www.twitch.tv/relaxbeats"
 
-        self.driver.execute_script("arguments[0].click();", dropdown_item)
+        self.driver.get(channel_url)
 
-        WebDriverWait(self.driver, 10).until(
-            EC.presence_of_element_located((By.CLASS_NAME, "ScManagerCategoryTileBase-sc-1uac1er-0"))
-        )
+        follow_button = WebDriverWait(self.driver, 10).until(
+            EC.element_to_be_clickable((By.XPATH, "//button[contains(@data-a-target, 'follow-button')]")))
 
-        assert "Horror" in self.driver.page_source
+        follow_button.click()
+
+        time.sleep(2)
+
+        assert "Unfollow" not in follow_button.text
 
     def tearDown(self):
         self.driver.quit()
+
 
 if __name__ == "__main__":
     unittest.main()
